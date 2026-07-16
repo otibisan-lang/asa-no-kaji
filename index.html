@@ -206,6 +206,45 @@
         .btn-omakase { padding: 6px 14px; font-size: 0.78rem; border: 2px solid #333; border-radius: 8px; background: #e8f5e9; cursor: pointer; font-weight: bold; white-space: nowrap; }
         .btn-undo-last { padding: 6px 14px; font-size: 0.78rem; border: 2px solid #333; border-radius: 8px; background: #f3e5f5; cursor: pointer; font-weight: bold; white-space: nowrap; }
         .btn-undo-last:disabled { opacity: 0.45; cursor: not-allowed; }
+
+        /* ========== 炊飯ナビ ========== */
+        .btn-suihan { padding: 6px 14px; font-size: 0.78rem; border: 2px solid #333; border-radius: 8px; background: #ffe0b2; cursor: pointer; font-weight: bold; white-space: nowrap; }
+        .btn-suihan-card { background: #ffe0b2; }
+        #suihan-view { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 300; background: #fff8f2; overflow-y: auto; }
+        #suihan-view.is-open { display: block; }
+        .suihan-header { position: sticky; top: 0; z-index: 10; background: white; border-bottom: 4px solid #333; padding: 10px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .suihan-title { margin: 0; font-size: 1.25rem; color: #e65100; }
+        .btn-suihan-back { padding: 8px 14px; border: 3px solid #333; border-radius: 10px; background: #e8e8e8; font-weight: bold; cursor: pointer; }
+        .suihan-tabs { display: flex; gap: 8px; margin-left: auto; }
+        .suihan-tab-btn { padding: 8px 18px; border: 3px solid #333; border-radius: 999px; background: white; font-weight: bold; cursor: pointer; }
+        .suihan-tab-btn.is-active { background: #f97316; color: white; }
+        .suihan-body { max-width: 720px; margin: 0 auto; padding: 20px 16px 60px; }
+        .suihan-card { background: white; border: 3px solid #333; border-radius: 18px; padding: 18px; margin-bottom: 16px; }
+        .suihan-result-card { border: 4px solid #f97316; text-align: center; }
+        .suihan-result-label { font-weight: bold; color: #f97316; letter-spacing: 0.12em; margin-bottom: 6px; font-size: 0.9rem; }
+        .suihan-total { font-size: 4.2rem; font-weight: bold; line-height: 1; }
+        .suihan-total-unit { font-size: 1.6rem; font-weight: bold; color: #888; margin-left: 6px; }
+        .suihan-subtotals { background: #fafafa; border: 2px solid #eee; border-radius: 12px; padding: 10px 14px; margin-top: 14px; text-align: left; font-size: 0.9rem; }
+        .suihan-subtotal-row { display: flex; justify-content: space-between; font-weight: bold; padding: 3px 0; }
+        .suihan-card-title { margin: 0 0 6px 0; font-size: 1.05rem; }
+        .suihan-note { font-size: 0.78rem; color: #888; font-weight: bold; margin: 0 0 14px 0; line-height: 1.5; }
+        .suihan-member-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 12px; border: 2px solid #ddd; border-radius: 12px; background: #fafafa; margin-bottom: 10px; }
+        .suihan-member-name { font-weight: bold; font-size: 1.05rem; }
+        .suihan-member-base { font-size: 0.72rem; color: #888; font-weight: bold; }
+        .suihan-member-btns { display: flex; gap: 8px; align-items: center; }
+        .suihan-toggle { padding: 8px 12px; border: 2px solid #ccc; border-radius: 10px; background: white; font-weight: bold; font-size: 0.85rem; cursor: pointer; }
+        .suihan-toggle.is-on { background: #f97316; border-color: #e65100; color: white; }
+        .suihan-gear { padding: 8px 10px; border: 2px solid #ccc; border-radius: 10px; background: white; cursor: pointer; font-size: 0.95rem; }
+        .suihan-label { display: block; font-size: 0.8rem; font-weight: bold; color: #555; margin-bottom: 6px; }
+        .suihan-time-input { width: 100%; box-sizing: border-box; font-size: 1.5rem; font-weight: bold; text-align: center; padding: 10px; border: 2px solid #ccc; border-radius: 12px; background: #fafafa; font-family: inherit; }
+        .btn-suihan-now { padding: 0 14px; border: 2px solid #333; border-radius: 12px; background: #ffe0b2; font-weight: bold; cursor: pointer; white-space: nowrap; }
+        .suihan-timer-result { margin: 8px 0 14px; font-weight: bold; }
+        .suihan-timer-num { font-size: 3.4rem; }
+        .suihan-timer-unit { font-size: 1.2rem; color: #888; margin: 0 4px; }
+        .suihan-stepper { display: flex; align-items: center; gap: 8px; border: 2px solid #ccc; border-radius: 12px; background: #fafafa; padding: 6px; }
+        .suihan-stepper button { width: 46px; height: 46px; border: 2px solid #333; border-radius: 10px; background: white; font-size: 1.3rem; font-weight: bold; cursor: pointer; padding: 0; flex-shrink: 0; }
+        .suihan-stepper input { flex: 1; min-width: 40px; text-align: center; font-size: 1.4rem; font-weight: bold; border: none; background: transparent; outline: none; font-family: inherit; }
+        .btn-suihan-save { width: 100%; margin-top: 18px; padding: 12px; background: #f97316; color: white; }
     </style>
 </head>
 <body>
@@ -218,6 +257,7 @@
                 <button type="button" class="btn-new-day" onclick="resetAndReload()">🔄 日付更新</button>
                 <button type="button" class="btn-omakase" onclick="openOmakaseModal()">🎲 予約ガチャ</button>
                 <button type="button" id="btn-undo-last" class="btn-undo-last" onclick="undoLastAction()" disabled>↩ 1つ戻す</button>
+                <button type="button" class="btn-suihan" onclick="openSuihanNavi()">🍚 炊飯ナビ</button>
             </div>
         </div>
         <div class="progress-box">
@@ -277,6 +317,75 @@
         <button type="button" class="btn-omakase-run" id="omakaseRunBtn" onclick="runOmakase()">この人たちに振り分ける</button>
         <div class="omakase-result-box" id="omakaseResultBox"></div>
         <button type="button" style="width:100%; background:#e8e8e8; margin-top:4px;" onclick="closeOmakaseModal()">閉じる</button>
+    </div>
+</div>
+
+<!-- 炊飯ナビ（全画面切り替え） -->
+<div id="suihan-view" aria-hidden="true">
+    <div class="suihan-header">
+        <button type="button" class="btn-suihan-back" onclick="closeSuihanNavi()">← 家事リストへ</button>
+        <h2 class="suihan-title">🍚 炊飯ナビ</h2>
+        <div class="suihan-tabs">
+            <button type="button" id="suihan-tab-calc" class="suihan-tab-btn is-active" onclick="suihanSwitchTab('calc')">何合炊く？</button>
+            <button type="button" id="suihan-tab-timer" class="suihan-tab-btn" onclick="suihanSwitchTab('timer')">タイマー設定</button>
+        </div>
+    </div>
+    <div class="suihan-body">
+        <section id="suihan-section-calc">
+            <div class="suihan-card suihan-result-card">
+                <div class="suihan-result-label">必要な炊飯量</div>
+                <div><span id="suihan-total" class="suihan-total">0.0</span><span class="suihan-total-unit">合</span></div>
+                <div class="suihan-subtotals">
+                    <div class="suihan-subtotal-row"><span>🏠 次回のご飯 合計</span><span id="suihan-subtotal-dinner">0.0 合</span></div>
+                    <div class="suihan-subtotal-row"><span>🍱 お弁当用 合計</span><span id="suihan-subtotal-bento">0.0 合</span></div>
+                </div>
+            </div>
+            <div class="suihan-card">
+                <h3 class="suihan-card-title">👥 食べるメンバーを選んでね</h3>
+                <p class="suihan-note">次回のご飯とお弁当、それぞれ必要な人をタップ！基準量は ⚙️ から変更できるよ。</p>
+                <div id="suihan-member-list"></div>
+            </div>
+        </section>
+        <section id="suihan-section-timer" style="display:none;">
+            <div class="suihan-card suihan-result-card">
+                <div class="suihan-result-label">タイマーセット時間</div>
+                <div id="suihan-timer-result" class="suihan-timer-result">--</div>
+                <p class="suihan-note" style="margin-bottom:0;">※ 炊飯器のタイマーが「10分単位」のため、1桁の端数は切り捨てて表示します。</p>
+            </div>
+            <div class="suihan-card">
+                <h3 class="suihan-card-title">⏰ 炊き上がり時間を設定</h3>
+                <label class="suihan-label" for="suihan-target-time">🍚 何時に食べたい？（目標時間）</label>
+                <input type="time" id="suihan-target-time" value="07:00" onchange="suihanCalcTimer()" class="suihan-time-input">
+                <label class="suihan-label" for="suihan-current-time" style="margin-top:16px;">⏱️ いま何時？（セットする時刻）</label>
+                <div style="display:flex; gap:8px;">
+                    <input type="time" id="suihan-current-time" onchange="suihanCalcTimer()" class="suihan-time-input">
+                    <button type="button" class="btn-suihan-now" onclick="suihanSetNowTime()">現在時刻</button>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- 炊飯ナビ 基準量設定モーダル -->
+<div id="suihanSettingsModal" class="modal" style="z-index:310;" aria-modal="true" role="dialog">
+    <div class="modal-content">
+        <h2 id="suihanSettingsTitle">⚙️ 基準量</h2>
+        <div style="text-align:left; margin-top:14px;">
+            <label class="suihan-label">🏠 次回のごはん基準量（合）</label>
+            <div class="suihan-stepper">
+                <button type="button" onclick="suihanAdjustValue('dinner', -0.1)">−</button>
+                <input type="number" id="suihan-input-dinner" step="0.1" min="0">
+                <button type="button" onclick="suihanAdjustValue('dinner', 0.1)">＋</button>
+            </div>
+            <label class="suihan-label" style="margin-top:14px;">🍱 お弁当の基準量（合）</label>
+            <div class="suihan-stepper">
+                <button type="button" onclick="suihanAdjustValue('bento', -0.1)">−</button>
+                <input type="number" id="suihan-input-bento" step="0.1" min="0">
+                <button type="button" onclick="suihanAdjustValue('bento', 0.1)">＋</button>
+            </div>
+        </div>
+        <button type="button" class="btn-suihan-save" onclick="suihanSaveSettings()">変更を保存する</button>
+        <button type="button" style="margin-top:10px; width:100%; background:#e8e8e8;" onclick="suihanCloseSettings()">キャンセル</button>
     </div>
 </div>
 
@@ -499,6 +608,210 @@
         return a;
     }
 
+    // ========== 炊飯ナビ ==========
+
+    var SUIHAN_MEMBERS_KEY = "suihan_navi_members";
+    var SUIHAN_DEFAULT_MEMBERS = [
+        { id: "junko", name: "じゅんこ", dinnerBase: 0.3, bentoBase: 0.4 },
+        { id: "yuma", name: "ゆうま", dinnerBase: 0.3, bentoBase: 0.4 },
+        { id: "shiori", name: "しおり", dinnerBase: 0.3, bentoBase: 0.5 },
+        { id: "takuya", name: "たくや", dinnerBase: 0.6, bentoBase: 0.6 }
+    ];
+    var suihanMembers = [];
+    var suihanSelections = {};
+    var suihanActiveSettingId = null;
+
+    function suihanInit() {
+        var saved = null;
+        try { saved = localStorage.getItem(SUIHAN_MEMBERS_KEY); } catch (e) {}
+        if (saved) {
+            try { suihanMembers = JSON.parse(saved); } catch (e) { suihanMembers = null; }
+        }
+        if (!suihanMembers || !suihanMembers.length) {
+            suihanMembers = JSON.parse(JSON.stringify(SUIHAN_DEFAULT_MEMBERS));
+            try { localStorage.setItem(SUIHAN_MEMBERS_KEY, JSON.stringify(suihanMembers)); } catch (e) {}
+        }
+        suihanSelections = {};
+        for (var i = 0; i < suihanMembers.length; i++) {
+            suihanSelections[suihanMembers[i].id] = { dinner: false, bento: false };
+        }
+        suihanRenderMembers();
+        suihanCalcTotal();
+        suihanSetNowTime();
+    }
+
+    function openSuihanNavi() {
+        suihanSetNowTime();
+        var v = document.getElementById("suihan-view");
+        v.classList.add("is-open");
+        v.setAttribute("aria-hidden", "false");
+    }
+
+    function closeSuihanNavi() {
+        var v = document.getElementById("suihan-view");
+        v.classList.remove("is-open");
+        v.setAttribute("aria-hidden", "true");
+        suihanCloseSettings();
+    }
+
+    function suihanSwitchTab(tab) {
+        document.getElementById("suihan-section-calc").style.display = (tab === "calc") ? "block" : "none";
+        document.getElementById("suihan-section-timer").style.display = (tab === "timer") ? "block" : "none";
+        document.getElementById("suihan-tab-calc").className = "suihan-tab-btn" + (tab === "calc" ? " is-active" : "");
+        document.getElementById("suihan-tab-timer").className = "suihan-tab-btn" + (tab === "timer" ? " is-active" : "");
+        if (tab === "timer") suihanCalcTimer();
+    }
+
+    function suihanPlayerColor(name) {
+        for (var i = 0; i < players.length; i++) {
+            if (players[i].name === name) return players[i].color;
+        }
+        return "#333";
+    }
+
+    function suihanRenderMembers() {
+        var list = document.getElementById("suihan-member-list");
+        list.innerHTML = "";
+        for (var i = 0; i < suihanMembers.length; i++) {
+            (function(m) {
+                var sel = suihanSelections[m.id] || { dinner: false, bento: false };
+                var row = document.createElement("div");
+                row.className = "suihan-member-row";
+
+                var info = document.createElement("div");
+                info.innerHTML = '<div class="suihan-member-name" style="color:' + suihanPlayerColor(m.name) + '">' + m.name + '</div>' +
+                    '<div class="suihan-member-base">ご飯: ' + m.dinnerBase.toFixed(1) + '合 / 弁当: ' + m.bentoBase.toFixed(1) + '合</div>';
+
+                var btns = document.createElement("div");
+                btns.className = "suihan-member-btns";
+
+                var bDinner = document.createElement("button");
+                bDinner.type = "button";
+                bDinner.className = "suihan-toggle" + (sel.dinner ? " is-on" : "");
+                bDinner.innerText = "🏠 次回ごはん";
+                bDinner.onclick = function() { suihanToggleSelect(m.id, "dinner"); };
+
+                var bBento = document.createElement("button");
+                bBento.type = "button";
+                bBento.className = "suihan-toggle" + (sel.bento ? " is-on" : "");
+                bBento.innerText = "🍱 お弁当";
+                bBento.onclick = function() { suihanToggleSelect(m.id, "bento"); };
+
+                var bGear = document.createElement("button");
+                bGear.type = "button";
+                bGear.className = "suihan-gear";
+                bGear.innerText = "⚙️";
+                bGear.setAttribute("aria-label", m.name + "の基準量を変更");
+                bGear.onclick = function() { suihanOpenSettings(m.id); };
+
+                btns.appendChild(bDinner);
+                btns.appendChild(bBento);
+                btns.appendChild(bGear);
+                row.appendChild(info);
+                row.appendChild(btns);
+                list.appendChild(row);
+            })(suihanMembers[i]);
+        }
+    }
+
+    function suihanToggleSelect(id, type) {
+        if (!suihanSelections[id]) suihanSelections[id] = { dinner: false, bento: false };
+        suihanSelections[id][type] = !suihanSelections[id][type];
+        suihanRenderMembers();
+        suihanCalcTotal();
+    }
+
+    function suihanCalcTotal() {
+        var dinner = 0, bento = 0;
+        for (var i = 0; i < suihanMembers.length; i++) {
+            var m = suihanMembers[i];
+            var sel = suihanSelections[m.id];
+            if (sel && sel.dinner) dinner += m.dinnerBase;
+            if (sel && sel.bento) bento += m.bentoBase;
+        }
+        document.getElementById("suihan-total").innerText = (dinner + bento).toFixed(1);
+        document.getElementById("suihan-subtotal-dinner").innerText = dinner.toFixed(1) + " 合";
+        document.getElementById("suihan-subtotal-bento").innerText = bento.toFixed(1) + " 合";
+    }
+
+    function suihanOpenSettings(id) {
+        var m = null;
+        for (var i = 0; i < suihanMembers.length; i++) {
+            if (suihanMembers[i].id === id) { m = suihanMembers[i]; break; }
+        }
+        if (!m) return;
+        suihanActiveSettingId = id;
+        document.getElementById("suihanSettingsTitle").innerText = "⚙️ " + m.name + "の基準量";
+        document.getElementById("suihan-input-dinner").value = m.dinnerBase.toFixed(1);
+        document.getElementById("suihan-input-bento").value = m.bentoBase.toFixed(1);
+        document.getElementById("suihanSettingsModal").style.display = "flex";
+    }
+
+    function suihanCloseSettings() {
+        document.getElementById("suihanSettingsModal").style.display = "none";
+        suihanActiveSettingId = null;
+    }
+
+    function suihanAdjustValue(type, amount) {
+        var input = document.getElementById("suihan-input-" + type);
+        var v = parseFloat(input.value) || 0;
+        v = Math.max(0, v + amount);
+        input.value = v.toFixed(1);
+    }
+
+    function suihanSaveSettings() {
+        if (!suihanActiveSettingId) return;
+        var m = null;
+        for (var i = 0; i < suihanMembers.length; i++) {
+            if (suihanMembers[i].id === suihanActiveSettingId) { m = suihanMembers[i]; break; }
+        }
+        if (!m) return;
+        var dv = parseFloat(document.getElementById("suihan-input-dinner").value);
+        var bv = parseFloat(document.getElementById("suihan-input-bento").value);
+        m.dinnerBase = isNaN(dv) ? 0 : Math.max(0, dv);
+        m.bentoBase = isNaN(bv) ? 0 : Math.max(0, bv);
+        try { localStorage.setItem(SUIHAN_MEMBERS_KEY, JSON.stringify(suihanMembers)); } catch (e) {}
+        suihanRenderMembers();
+        suihanCalcTotal();
+        suihanCloseSettings();
+    }
+
+    function suihanSetNowTime() {
+        var now = new Date();
+        var h = String(now.getHours());
+        var mi = String(now.getMinutes());
+        if (h.length < 2) h = "0" + h;
+        if (mi.length < 2) mi = "0" + mi;
+        document.getElementById("suihan-current-time").value = h + ":" + mi;
+        suihanCalcTimer();
+    }
+
+    function suihanCalcTimer() {
+        var targetVal = document.getElementById("suihan-target-time").value;
+        var currentVal = document.getElementById("suihan-current-time").value;
+        var box = document.getElementById("suihan-timer-result");
+        if (!targetVal || !currentVal) return;
+
+        var tp = targetVal.split(":");
+        var cp = currentVal.split(":");
+        var targetMinutes = Number(tp[0]) * 60 + Number(tp[1]);
+        var currentMinutes = Number(cp[0]) * 60 + Number(cp[1]);
+
+        if (targetMinutes <= currentMinutes) {
+            targetMinutes += 24 * 60;
+        }
+
+        var diffMinutes = targetMinutes - currentMinutes;
+        var diffH = Math.floor(diffMinutes / 60);
+        var diffM = diffMinutes % 60;
+
+        // 10分刻みの炊飯器に合わせて、1桁目（9分以下）を切り捨てる
+        diffM = Math.floor(diffM / 10) * 10;
+
+        box.innerHTML = '<span class="suihan-timer-num">' + diffH + '</span><span class="suihan-timer-unit">時間</span>' +
+            '<span class="suihan-timer-num">' + diffM + '</span><span class="suihan-timer-unit">分後</span>';
+    }
+
     // ========== 既存ロジック ==========
 
     function getTicketAck() {
@@ -683,6 +996,7 @@
         } else {
             resetTasks();
         }
+        suihanInit();
         render();
     }
 
@@ -985,6 +1299,7 @@
                                '<div><div class="task-title">'+task.title+'</div><span class="task-points">'+task.points+'pt</span>' +
                                (task.reservedBy ? '<div class="reserved-label" style="background:'+resColor+'">📌 '+task.reservedBy+'</div>' : '') +
                                '</div><div class="btn-group">' +
+                               (task.title === "炊飯器のセット" ? '<button type="button" class="btn-suihan-card" onclick="openSuihanNavi()">🍚 炊飯ナビ</button>' : '') +
                                '<button onclick="openPlayerSelect('+task.id+',\'reserve\')">予約</button>' +
                                '<button class="btn-done" onclick="openPlayerSelect('+task.id+',\'done\')">完了</button>' +
                                '</div></div>';
