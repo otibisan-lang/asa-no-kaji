@@ -238,6 +238,8 @@
         .suihan-label { display: block; font-size: 0.8rem; font-weight: bold; color: #555; margin-bottom: 6px; }
         .suihan-time-input { width: 100%; box-sizing: border-box; font-size: 1.5rem; font-weight: bold; text-align: center; padding: 10px; border: 2px solid #ccc; border-radius: 12px; background: #fafafa; font-family: inherit; }
         .btn-suihan-now { padding: 0 14px; border: 2px solid #333; border-radius: 12px; background: #ffe0b2; font-weight: bold; cursor: pointer; white-space: nowrap; }
+        .suihan-preset-row { display: flex; gap: 8px; margin-top: 8px; }
+        .suihan-preset-btn { flex: 1; padding: 10px 4px; border: 2px solid #333; border-radius: 10px; background: #fff3e0; font-weight: bold; font-size: 0.82rem; cursor: pointer; white-space: nowrap; }
         .suihan-timer-result { margin: 8px 0 14px; font-weight: bold; }
         .suihan-timer-num { font-size: 3.4rem; }
         .suihan-timer-unit { font-size: 1.2rem; color: #888; margin: 0 4px; }
@@ -355,7 +357,12 @@
             <div class="suihan-card">
                 <h3 class="suihan-card-title">⏰ 炊き上がり時間を設定</h3>
                 <label class="suihan-label" for="suihan-target-time">🍚 何時に食べたい？（目標時間）</label>
-                <input type="time" id="suihan-target-time" value="07:00" onchange="suihanCalcTimer()" class="suihan-time-input">
+                <input type="time" id="suihan-target-time" value="18:00" onchange="suihanCalcTimer()" class="suihan-time-input">
+                <div class="suihan-preset-row">
+                    <button type="button" class="suihan-preset-btn" onclick="suihanSetTargetTime('06:00')">🌅 朝食 6:00</button>
+                    <button type="button" class="suihan-preset-btn" onclick="suihanSetTargetTime('12:00')">☀️ 昼食 12:00</button>
+                    <button type="button" class="suihan-preset-btn" onclick="suihanSetTargetTime('18:00')">🌙 夕食 18:00</button>
+                </div>
                 <label class="suihan-label" for="suihan-current-time" style="margin-top:16px;">⏱️ いま何時？（セットする時刻）</label>
                 <div style="display:flex; gap:8px;">
                     <input type="time" id="suihan-current-time" onchange="suihanCalcTimer()" class="suihan-time-input">
@@ -775,6 +782,11 @@
         suihanRenderMembers();
         suihanCalcTotal();
         suihanCloseSettings();
+    }
+
+    function suihanSetTargetTime(t) {
+        document.getElementById("suihan-target-time").value = t;
+        suihanCalcTimer();
     }
 
     function suihanSetNowTime() {
