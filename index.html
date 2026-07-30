@@ -48,6 +48,10 @@
         .done-by-title { font-size: 1rem; font-weight: bold; padding: 6px 14px; margin: 16px 0 10px 0; border-left: 8px solid #333; background: #f5f5f5; border-radius: 6px; }
         .task-card-done { background: #f0f0f0; border-color: #888; }
         .task-card-done .task-title { color: #666; text-decoration: line-through; }
+        .task-done-time { font-size: 0.68rem; font-weight: bold; margin-left: 6px; letter-spacing: 0.02em; vertical-align: middle; }
+        .task-card-done .task-points { vertical-align: middle; }
+        .task-done-time--ontime { color: #4c8c5a; }
+        .task-done-time--late { color: #b85c5c; }
         .btn-undo { background: #e8e8e8; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 100; }
@@ -865,7 +869,7 @@
     function getTaskSnapshot(taskId) {
         var t = findTask(taskId);
         if (!t) return null;
-        return { status: t.status, reservedBy: t.reservedBy, doneBy: t.doneBy };
+        return { status: t.status, reservedBy: t.reservedBy, doneBy: t.doneBy, doneAt: t.doneAt };
     }
 
     function applySnapshot(taskId, snap) {
@@ -874,7 +878,25 @@
         t.status = snap.status;
         t.reservedBy = snap.reservedBy;
         t.doneBy = snap.doneBy;
+        t.doneAt = snap.doneAt;
         return true;
+    }
+
+    // カテゴリごとの目標タイム（この時刻までに完了できると◎）
+    var CAT_TARGET_TIMES = { "第一部": "07:30", "第二部": "08:00", "第三部": "08:30" };
+
+    function timeStrToMinutes(str) {
+        var parts = str.split(":");
+        return Number(parts[0]) * 60 + Number(parts[1]);
+    }
+
+    function nowTimeStr() {
+        var d = new Date();
+        var h = String(d.getHours());
+        var mi = String(d.getMinutes());
+        if (h.length < 2) h = "0" + h;
+        if (mi.length < 2) mi = "0" + mi;
+        return h + ":" + mi;
     }
 
     function pushHistory(entry) {
@@ -1027,7 +1049,7 @@
                 if (mt.title.indexOf("しおり") !== -1) def = "しおり";
                 if (mt.title.indexOf("じゅんこ") !== -1) def = "じゅんこ";
                 if (mt.defaultReserve) def = mt.defaultReserve(todayNum);
-                tasks.push({ id: i, title: mt.title, points: mt.points, cat: mt.cat, status: "todo", reservedBy: def, doneBy: null });
+                tasks.push({ id: i, title: mt.title, points: mt.points, cat: mt.cat, status: "todo", reservedBy: def, doneBy: null, doneAt: null });
             }
         }
         save();
@@ -1092,6 +1114,7 @@
                 } else {
                     tasks[i].status = "done";
                     tasks[i].doneBy = name;
+                    tasks[i].doneAt = nowTimeStr();
                     pushHistory({ type: "complete", taskId: currentTaskId, playerName: name, prev: prev });
                     playTaskDoneSound();
                 }
@@ -1118,6 +1141,7 @@
                 prev = getTaskSnapshot(id);
                 tasks[i].status = "todo";
                 tasks[i].doneBy = null;
+                tasks[i].doneAt = null;
                 changed = true;
                 break;
             }
@@ -1335,8 +1359,17 @@
                 for (var di = 0; di < list.length; di++) {
                     var dtask = list[di];
                     var isDoneWeekday = !!(masterTasks[dtask.id] && masterTasks[dtask.id].cond);
+                    var doneTimeHtml = "";
+                    if (dtask.doneAt) {
+                        var timeCls = "task-done-time";
+                        var targetTime = CAT_TARGET_TIMES[dtask.cat];
+                        if (targetTime) {
+                            timeCls += (timeStrToMinutes(dtask.doneAt) <= timeStrToMinutes(targetTime)) ? " task-done-time--ontime" : " task-done-time--late";
+                        }
+                        doneTimeHtml = '<span class="' + timeCls + '">🕐 ' + dtask.doneAt + '</span>';
+                    }
                     doneHtml += '<div class="task-card task-card-done' + (isDoneWeekday ? ' task-card--weekday' : '') + '">' +
-                        '<div><div class="task-title">' + dtask.title + '</div><span class="task-points">' + dtask.points + 'pt</span></div>' +
+                        '<div><div class="task-title">' + dtask.title + '</div><span class="task-points">' + dtask.points + 'pt</span>' + doneTimeHtml + '</div>' +
                         '<div class="btn-group">' +
                         '<button type="button" class="btn-undo" onclick="undoComplete(' + dtask.id + ')">未完了にする</button>' +
                         '</div></div>';
