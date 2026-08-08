@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>朝の家事リスト Ver.24</title>
+    <title>朝の家事リスト Ver.25</title>
     <style>
         :root {
             --bg-color: #fcfcfc;
@@ -289,9 +289,6 @@
         <div id="weekday-tasks-panel-body" class="weekday-tasks-panel weekday-tasks-panel--hidden" aria-label="曜日別のタスク一覧（詳細）" aria-hidden="true" role="region"></div>
     </div>
 
-    <button onclick="confirmReset()" style="width: 100%; margin-top: 50px; padding: 20px; background: var(--posca-pink); color: white; font-size: 1.2rem; border-radius: 15px;">
-        朝のリセット (新しく作り直す)
-    </button>
 </div>
 
 <!-- プレイヤー選択モーダル -->
@@ -412,6 +409,8 @@
     var days = ["日", "月", "火", "水", "木", "金", "土"];
 
     var masterTasks = [
+        { title: "歯磨き確認", points: 0, cat: "第一部" },
+        { title: "日記を書く", points: 0, cat: "第一部" },
         { title: "ゴミ箱がいっぱいなら捨てる", points: 10, cat: "第一部" },
         { title: "その日のゴミを玄関へ", points: 10, cat: "第一部", cond: function(d){ return d >= 1 && d <= 5; } },
         { title: "布団の乾燥セット", points: 10, cat: "第一部", cond: function(d){ return d === 1; } },
@@ -426,14 +425,12 @@
         { title: "床の水拭き", points: 30, cat: "第三部", cond: function(d){ return d === 0; } },
         { title: "買い物リストと食材解凍", points: 10, cat: "第三部" },
         { title: "手拭きタオル・製氷の水", points: 10, cat: "第二部" },
-        { title: "みそ汁の鍋を洗う", points: 5, cat: "第一部" },
-        { title: "食洗機スタート", points: 5, cat: "第一部" },
-        { title: "炊飯ジャー洗う", points: 5, cat: "第一部" },
-        { title: "食器乾燥スタート", points: 5, cat: "第二部" },
-        { title: "みそ汁を冷蔵庫へ", points: 5, cat: "第三部" },
-        { title: "炊飯器のセット", points: 20, cat: "第三部" },
+        { title: "みそ汁の鍋を洗う", points: 10, cat: "第一部" },
+        { title: "食洗機スタート", points: 10, cat: "第一部" },
+        { title: "食器乾燥スタート", points: 10, cat: "第二部" },
+        { title: "炊飯ジャー洗ってセット", points: 20, cat: "第三部" },
         { title: "食器をしまう", points: 20, cat: "第三部" },
-        { title: "みんなのスマホをしまう", points: 5, cat: "第一部" },
+        { title: "みんなのスマホをしまう", points: 0, cat: "第一部" },
         { title: "マモルームの電源を切る", points: 0, cat: "第一部", cond: function(d){ var m = new Date().getMonth() + 1; return m >= 4 && m <= 10; } },
         { title: "5分タイム(ゆうま)", points: 20, cat: "第二部" },
         { title: "5分タイム(しおり)", points: 20, cat: "第二部" },
@@ -444,12 +441,10 @@
         { title: "弁当・外出準備(しおり)", points: 0, cat: "第三部" },
         { title: "トイレ掃除", points: 30, cat: "第三部", cond: function(d){ return d === 0 || d === 2 || d === 4 || d === 6; }, defaultReserve: function(d){ if (d === 6) return "しおり"; if (d === 4) return "ゆうま"; return null; } },
         { title: "リビング廊下洗面所の掃除", points: 20, cat: "第三部" },
-        { title: "エアコン・電気・カーテン", points: 5, cat: "第一部" },
-        { title: "洗濯物をわける", points: 15, cat: "第二部" },
-        { title: "洗濯物をたたむ", points: 15, cat: "第三部" },
-        { title: "洗濯物をしまう", points: 5, cat: "第三部" },
-        { title: "歯磨き確認", points: 0, cat: "第一部" },
-        { title: "日記を書く", points: 0, cat: "第一部" },
+        { title: "エアコン・電気・カーテン", points: 0, cat: "第一部" },
+        { title: "洗濯物をわける", points: 10, cat: "第二部" },
+        { title: "洗濯物をたたむ", points: 10, cat: "第三部" },
+        { title: "洗濯物とみそ汁をしまう", points: 10, cat: "第三部" },
         { title: "風呂掃除", points: 10, cat: "第二部" },
         { title: "予定を書く／週間・日", points: 20, cat: "第二部" },
         { title: "月に1回のやることをやる", points: 10, cat: "第二部" },
@@ -1125,7 +1120,6 @@
     }
 
     function closeModal() { document.getElementById('playerModal').style.display = "none"; }
-    function confirmReset() { if (confirm("リストを新しく作り直しますか？")) { resetTasks(); render(); } }
     function resetAndReload() {
         if (confirm("日付を最新にして、リストを作り直しますか？")) {
             localStorage.removeItem('kaji_vfinal');
@@ -1321,7 +1315,8 @@
 
         for (var c = 0; c < cats.length; c++) {
             var catName = cats[c];
-            var catHtml = '<div class="category-title">'+catName+'</div><div class="task-grid">';
+            var catTime = CAT_TARGET_TIMES[catName] ? CAT_TARGET_TIMES[catName].replace(/^0/, '') : '';
+            var catHtml = '<div class="category-title">'+catName+(catTime ? '（'+catTime+'まで）' : '')+'</div><div class="task-grid">';
             var hasTask = false;
             for (var t = 0; t < tasks.length; t++) {
                 var task = tasks[t];
@@ -1336,7 +1331,7 @@
                                '<div><div class="task-title">'+task.title+'</div><span class="task-points">'+task.points+'pt</span>' +
                                (task.reservedBy ? '<div class="reserved-label" style="background:'+resColor+'">📌 '+task.reservedBy+'</div>' : '') +
                                '</div><div class="btn-group">' +
-                               (task.title === "炊飯器のセット" ? '<button type="button" class="btn-suihan-card" onclick="openSuihanNavi()">🍚 炊飯ナビ</button>' : '') +
+                               (task.title === "炊飯ジャー洗ってセット" ? '<button type="button" class="btn-suihan-card" onclick="openSuihanNavi()">🍚 炊飯ナビ</button>' : '') +
                                '<button onclick="openPlayerSelect('+task.id+',\'reserve\')">予約</button>' +
                                '<button class="btn-done" onclick="openPlayerSelect('+task.id+',\'done\')">完了</button>' +
                                '</div></div>';
