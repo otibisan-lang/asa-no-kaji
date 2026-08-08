@@ -32,6 +32,8 @@
         .score-reserved { font-size: 0.72rem; color: #555; margin-top: 4px; font-weight: bold; }
 
         .category-title { font-size: 1.1rem; font-weight: bold; background: #eee; padding: 5px 15px; border-radius: 5px; border-left: 8px solid #333; margin: 20px 0 10px 0; }
+        .category-countdown { color: #d9534f; }
+        .category-countdown--over { color: #888; }
         .task-grid { display: flex; flex-wrap: wrap; gap: 15px; }
         .task-card { border: 3px solid #333; border-radius: 15px; padding: 15px; background: white; width: 200px; display: flex; flex-direction: column; justify-content: space-between; }
         .task-card--weekday { background: #2a2a2a; border-color: #111; color: white; }
@@ -885,6 +887,28 @@
         return Number(parts[0]) * 60 + Number(parts[1]);
     }
 
+    function updateCountdowns() {
+        var els = document.querySelectorAll('.category-countdown');
+        if (!els.length) return;
+        var now = new Date();
+        for (var i = 0; i < els.length; i++) {
+            var el = els[i];
+            var target = el.getAttribute('data-target-time');
+            var parts = target.split(':');
+            var targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), Number(parts[0]), Number(parts[1]), 0);
+            var diffSec = Math.floor((targetDate - now) / 1000);
+            if (diffSec <= 0) {
+                el.textContent = "終了";
+                el.classList.add('category-countdown--over');
+            } else {
+                var min = Math.floor(diffSec / 60);
+                var sec = diffSec % 60;
+                el.textContent = "あと" + min + "分" + sec + "秒";
+                el.classList.remove('category-countdown--over');
+            }
+        }
+    }
+
     function nowTimeStr() {
         var d = new Date();
         var h = String(d.getHours());
@@ -1028,6 +1052,8 @@
         }
         suihanInit();
         render();
+        updateCountdowns();
+        setInterval(updateCountdowns, 1000);
     }
 
     function resetTasks() {
@@ -1316,7 +1342,8 @@
         for (var c = 0; c < cats.length; c++) {
             var catName = cats[c];
             var catTime = CAT_TARGET_TIMES[catName] ? CAT_TARGET_TIMES[catName].replace(/^0/, '') : '';
-            var catHtml = '<div class="category-title">'+catName+(catTime ? '（'+catTime+'まで）' : '')+'</div><div class="task-grid">';
+            var countdownHtml = CAT_TARGET_TIMES[catName] ? ' <span class="category-countdown" data-target-time="'+CAT_TARGET_TIMES[catName]+'"></span>' : '';
+            var catHtml = '<div class="category-title">'+catName+(catTime ? '（'+catTime+'まで）' : '')+countdownHtml+'</div><div class="task-grid">';
             var hasTask = false;
             for (var t = 0; t < tasks.length; t++) {
                 var task = tasks[t];
