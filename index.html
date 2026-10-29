@@ -412,7 +412,7 @@
 
     var masterTasks = [
         { title: "歯磨き確認", points: 0, cat: "第一部" },
-        { title: "日記を書く", points: 0, cat: "第一部" },
+        { title: "日記を書く", points: 0, cat: "第三部" },
         { title: "ゴミ箱がいっぱいなら捨てる", points: 10, cat: "第一部" },
         { title: "その日のゴミを玄関へ", points: 10, cat: "第一部", cond: function(d){ return d >= 1 && d <= 5; } },
         { title: "布団の乾燥セット", points: 10, cat: "第一部", cond: function(d){ return d === 1; } },
@@ -448,8 +448,8 @@
         { title: "洗濯物をたたむ", points: 10, cat: "第三部" },
         { title: "洗濯物とみそ汁をしまう", points: 10, cat: "第三部" },
         { title: "風呂掃除", points: 10, cat: "第二部" },
-        { title: "予定を書く／週間・日", points: 20, cat: "第二部" },
-        { title: "月に1回のやることをやる", points: 10, cat: "第二部" },
+        { title: "予定を書く／週間・日", points: 10, cat: "第二部" },
+        { title: "月に1回のやることをやる", points: 20, cat: "第二部" },
         { title: "ゴミ袋7日分セット", points: 10, cat: "第三部", cond: function(d){ return d === 6; } },
     ];
 
