@@ -65,6 +65,10 @@
         .all-clear-wrap { text-align: center; padding: 28px 18px; margin-bottom: 12px; border: 4px solid #333; border-radius: 18px; background: linear-gradient(180deg, #f1f8e9 0%, #fffde7 100%); }
         .all-clear-main { font-size: 1.45rem; font-weight: bold; margin-bottom: 14px; line-height: 1.4; }
         .all-clear-sub { font-size: 1.05rem; color: #333; line-height: 1.5; font-weight: bold; }
+        .all-clear-eval { margin-top: 14px; padding: 8px 14px; border: 2px dashed #333; border-radius: 10px; background: white; font-size: 0.95rem; font-weight: bold; display: inline-block; }
+        .all-clear-eval--early { color: #4c8c5a; }
+        .all-clear-eval--late { color: #b85c5c; }
+        .all-clear-mvp { margin-top: 14px; font-size: 0.95rem; font-weight: bold; line-height: 1.6; }
         .modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
 
         #sticky-stats {
@@ -881,6 +885,8 @@
 
     // カテゴリごとの目標タイム（この時刻までに完了できると◎）
     var CAT_TARGET_TIMES = { "第一部": "07:30", "第二部": "08:00", "第三部": "08:30" };
+    // 全体の目標完了タイム
+    var OVERALL_TARGET_TIME = "08:30";
 
     function timeStrToMinutes(str) {
         var parts = str.split(":");
@@ -1432,9 +1438,57 @@
             topHtml = '<div style="text-align:center; padding:50px; font-size:1.2rem;">タスクがありません</div>';
         } else if (!topHtml && tasks.length > 0 && doneCount === tasks.length) {
             if (getTicketAck()) {
+                // 目標完了タイムとの比較
+                var lastFinishMinutes = null;
+                for (var fi = 0; fi < tasks.length; fi++) {
+                    if (tasks[fi].doneAt) {
+                        var fm = timeStrToMinutes(tasks[fi].doneAt);
+                        if (lastFinishMinutes === null || fm > lastFinishMinutes) lastFinishMinutes = fm;
+                    }
+                }
+                var evalHtml = "";
+                if (lastFinishMinutes !== null) {
+                    var targetMinutes = timeStrToMinutes(OVERALL_TARGET_TIME);
+                    var diff = targetMinutes - lastFinishMinutes;
+                    var targetLabel = OVERALL_TARGET_TIME.replace(/^0/, "");
+                    var evalCls, evalText;
+                    if (diff > 0) {
+                        evalCls = "all-clear-eval all-clear-eval--early";
+                        evalText = "🎉 目標の" + targetLabel + "より " + diff + "分早く 終われました！";
+                    } else if (diff < 0) {
+                        evalCls = "all-clear-eval all-clear-eval--late";
+                        evalText = "目標の" + targetLabel + "より " + (-diff) + "分オーバーしました";
+                    } else {
+                        evalCls = "all-clear-eval all-clear-eval--early";
+                        evalText = "🎯 目標の" + targetLabel + "ちょうどに終われました！";
+                    }
+                    evalHtml = '<div class="' + evalCls + '">' + evalText + '</div>';
+                }
+
+                // 一番がんばった人（完了ポイント最多）を褒める
+                var mvpHtml = "";
+                var maxScore = 0;
+                for (var mi = 0; mi < players.length; mi++) {
+                    if (scores[players[mi].name] > maxScore) maxScore = scores[players[mi].name];
+                }
+                if (maxScore > 0) {
+                    var mvpNames = [];
+                    var mvpColor = "#333";
+                    for (var mj = 0; mj < players.length; mj++) {
+                        if (scores[players[mj].name] === maxScore) {
+                            mvpNames.push('<span style="color:' + players[mj].color + '">' + players[mj].name + '</span>');
+                            mvpColor = players[mj].color;
+                        }
+                    }
+                    var mvpLabel = mvpNames.join("・");
+                    var mvpPraise = "みんなのために、たくさん家事をしてくれてありがとう！";
+                    mvpHtml = '<div class="all-clear-mvp">👑 今日いちばんがんばったのは ' + mvpLabel + '（' + maxScore + 'pt）！<br>' + mvpPraise + '</div>';
+                }
+
                 topHtml = '<div class="all-clear-wrap">' +
                     '<div class="all-clear-main">✨ すべての家事が完了しました！ ✨</div>' +
-                    '<div class="all-clear-sub">チケットの受け取りまで確認済みです。本日の朝の家事はすべて完了です。</div></div>';
+                    '<div class="all-clear-sub">チケットの受け取りまで確認済みです。</div>' +
+                    evalHtml + mvpHtml + '</div>';
             } else {
                 topHtml = "";
             }
